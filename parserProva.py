@@ -20,6 +20,14 @@ def parse_input(filename):
 
     return width, height, golden_point_coords, silver_point_coords, tiles
 
+def get_cheapest_tile(tiles, f, t):
+    if not tiles:
+        return None
+    filtered_tiles = list(filter(lambda tile: tile.can_move(f, t) and tile.is_available(), tiles))
+    if not filtered_tiles:
+        return None
+    return min(filtered_tiles, key=lambda tile: tile.cost)
+
 # Example usage:
 filename = './data/00-trailer.txt'  # Change this to your input file name
 width, height, golden_points, silver_points, tiles = parse_input(filename)
@@ -35,3 +43,5 @@ for point in silver_points:
 print("Tiles:")
 for tile in tiles:
     print(tile.id, tile.cost, tile.available)
+
+# print(get_cheapest_tile(tiles , "R", "L"))

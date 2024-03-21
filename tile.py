@@ -15,11 +15,11 @@ moves = {"3": ["LR"],
 class Tile:
     def __init__(self, id, cost, available):
         self.id = id
-        self.cost = cost
-        self.available = available
+        self.cost = int(cost)
+        self.available = int(available)
 
     def __str__(self):
-        return f"Tyle - Cost: {self.cost}, Available: {self.available}"
+        return f"Tyle - Id: {self.id} Cost: {self.cost}, Available: {self.available}"
 
     def use(self):
         if self.disponibili > 0:
@@ -28,3 +28,5 @@ class Tile:
             raise Exception("Not available")
     def can_move(self, f, t):
         return (f+t in moves[self.id] or t+f in moves[self.id])
+    def is_available(self):
+        return self.available > 0
