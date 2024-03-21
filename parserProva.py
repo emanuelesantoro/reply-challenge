@@ -29,7 +29,7 @@ def get_cheapest_tile(tiles, f, t):
     return min(filtered_tiles, key=lambda tile: tile.cost)
 
 # Example usage:
-filename = './data/00-trailer.txt'  # Change this to your input file name
+filename = './data/01-comedy.txt'  # Change this to your input file name
 width, height, golden_points, silver_points, tiles = parse_input(filename)
 
 print("Width:", width)
@@ -44,4 +44,54 @@ print("Tiles:")
 for tile in tiles:
     print(tile.id, tile.cost, tile.available)
 
+# Create a matrix with null elements
+grid = [[None for _ in range(width)] for _ in range(height)]
+
+# Set the coordinates of golden points in the matrix
+for point in golden_points:
+    grid[point.y][point.x] = 'G'
+
+# Set the coordinates of silver points in the matrix
+for point in silver_points:
+    grid[point.y][point.x] = 'S'
+
+def calculate_distance(golden_point1, golden_point2):
+    distance = abs(golden_point1.x - golden_point2.x) + abs(golden_point1.y - golden_point2.y)
+    return distance
+
+def find_nearest_silver_point(grid, current_point):
+    min_distance = float('inf')
+    nearest_point = None
+    for row in range(len(grid)):
+        for col in range(len(grid[row])):
+            if grid[row][col] == 'S':
+                distance = calculate_distance(current_point, SilverPoint(col, row, 0))
+                if distance < min_distance:
+                    min_distance = distance
+                    nearest_point = SilverPoint(col, row, 0)
+
+    return nearest_point
+def find_nearest_golden_point(grid, current_point):
+    min_distance = float('inf')
+    nearest_point = None
+    for row in range(len(grid)):
+        for col in range(len(grid[row])):
+            if grid[row][col] == 'G':
+                distance = calculate_distance(current_point, GoldenPoint(col, row))
+                if distance < min_distance:
+                    min_distance = distance
+                    nearest_point = GoldenPoint(col, row)
+
+    return nearest_point
+
+
 # print(get_cheapest_tile(tiles , "R", "L"))
+def print_grid(grid):
+    for row in grid:
+        print(' '.join(row))
+
+def print_grid_ascii(grid):
+    for row in grid:
+        print(' '.join(['-' if cell is None else cell for cell in row]))
+
+print_grid_ascii(grid)
