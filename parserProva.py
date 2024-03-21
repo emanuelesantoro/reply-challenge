@@ -4,6 +4,7 @@ class GoldenPoint:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.visited = False
 class SilverPoint:
     def __init__(self, x, y, cost):
         self.x = x
@@ -60,29 +61,38 @@ def calculate_distance(golden_point1, golden_point2):
     distance = abs(golden_point1.x - golden_point2.x) + abs(golden_point1.y - golden_point2.y)
     return distance
 
-def find_nearest_silver_point(grid, current_point):
+def find_nearest_silver_point(current_point):
     min_distance = float('inf')
     nearest_point = None
-    for row in range(len(grid)):
-        for col in range(len(grid[row])):
-            if grid[row][col] == 'S':
-                distance = calculate_distance(current_point, SilverPoint(col, row, 0))
-                if distance < min_distance:
-                    min_distance = distance
-                    nearest_point = SilverPoint(col, row, 0)
+    filtered_silver_points = list(filter(lambda point: not point.visited, silver_points))
+    for s in filtered_silver_points:
+        distance = calculate_distance(current_point, s)
+        if distance < min_distance:
+            min_distance = distance
+            nearest_point = s
 
     return nearest_point
-def find_nearest_golden_point(grid, current_point):
+def find_nearest_golden_point(current_point):
     min_distance = float('inf')
     nearest_point = None
-    for row in range(len(grid)):
-        for col in range(len(grid[row])):
-            if grid[row][col] == 'G':
-                distance = calculate_distance(current_point, GoldenPoint(col, row))
-                if distance < min_distance:
-                    min_distance = distance
-                    nearest_point = GoldenPoint(col, row)
+    filtered_golden_points = list(filter(lambda point: not point.visited, golden_points))
+    for g in filtered_golden_points:
+        distance = calculate_distance(current_point, g)
+        if distance < min_distance:
+            min_distance = distance
+            nearest_point = g
 
+    return nearest_point
+
+def find_nearest_point(current_point):
+    min_distance = float('inf')
+    nearest_point = None
+    filtered_silver_points = list(filter(lambda point: not point.visited, silver_points + golden_points))
+    for s in filtered_silver_points:
+        distance = calculate_distance(current_point, s)
+        if distance < min_distance:
+            min_distance = distance
+            nearest_point = s
     return nearest_point
 
 
@@ -103,4 +113,42 @@ def write_grid_to_file(grid, filename):
                     if cell not in[None, 'G', 'S']:
                         f.write(f"{cell} {col} {row}\n")
 
+def end():
+    for g in golden_points:
+        if not g.visited:
+            return False
+    return True
+
+s = find_nearest_silver_point(golden_points[2])
+current_point = golden_points[0]
+current_point.visited = True
+while not end():
+    if s.y > current_point.y:
+        for y in range(current_point.y, s.y + 1):
+            cell = grid[y][s.x]
+            if cell is not "G":
+                grid[y][s.x] = 'F'
+    else:
+        for y in range(s.y, current_point.y + 1):
+            cell = grid[y][s.x]
+            if cell is not "G":
+                grid[y][s.x] = 'F'  
+    if s.x > current_point.x:
+        for x in range(current_point.x, s.x + 1):
+            cell = grid[current_point.y][x]
+            if cell is not "G":
+                grid[current_point.y][x] = 'F'
+    else:
+        for x in range(s.x, current_point.x + 1):
+            cell = grid[current_point.y][x]
+            if cell is not "G":
+                grid[current_point.y][x] = 'F'
+    current_point = s
+    s.visited = True 
+    s = find_nearest_point(current_point)
+
+
 write_grid_to_file(grid, './data/01-comedy-solution.txt')
+
+print_grid_ascii(grid)
+
