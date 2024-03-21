@@ -1,3 +1,5 @@
+from tile import Tile
+
 class GoldenPoint:
     def __init__(self, x, y):
         self.x = x
@@ -7,11 +9,6 @@ class SilverPoint:
         self.x = x
         self.y = y
         self.cost = cost
-class Tile:
-    def __init__(self, id, cost, available):
-        self.id = id
-        self.cost = cost
-        self.available = available
 
 def parse_input(filename):
     with open(filename, 'r', encoding='utf-8-sig') as f:  # Specify utf-8-sig to skip the BOM character
@@ -24,7 +21,7 @@ def parse_input(filename):
     return width, height, golden_point_coords, silver_point_coords, tiles
 
 # Example usage:
-filename = '00-trailer.txt'  # Change this to your input file name
+filename = './data/00-trailer.txt'  # Change this to your input file name
 width, height, golden_points, silver_points, tiles = parse_input(filename)
 
 print("Width:", width)

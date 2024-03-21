@@ -12,7 +12,7 @@ moves = {"3": ["LR"],
          "E": ["LU", "LD", "UD"],
          "F": ["LR", "LD", "LU", "UD", "DR", "UR"]}
 
-class Tyle:
+class Tile:
     def __init__(self, id, cost, available):
         self.id = id
         self.cost = cost
@@ -28,6 +28,3 @@ class Tyle:
             raise Exception("Not available")
     def can_move(self, f, t):
         return (f+t in moves[self.id] or t+f in moves[self.id])
-    
-t = Tyle("3", 4, 10)
-print(t.can_move("R", "U"))
