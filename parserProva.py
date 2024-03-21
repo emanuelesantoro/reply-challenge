@@ -9,6 +9,7 @@ class SilverPoint:
         self.x = x
         self.y = y
         self.cost = cost
+        self.visited = False
 
 def parse_input(filename):
     with open(filename, 'r', encoding='utf-8-sig') as f:  # Specify utf-8-sig to skip the BOM character
@@ -94,23 +95,12 @@ def print_grid_ascii(grid):
     for row in grid:
         print(' '.join(['-' if cell is None else cell for cell in row]))
 
-print_grid_ascii(grid)
-
-
-# brute brute force solution, put F everywhere
-for row in range(height):
-    for col in range(width):
-        if grid[row][col] != 'G':
-            grid[row][col] = 'F'
-
 def write_grid_to_file(grid, filename):
     with open(filename, 'w') as f:
-        for row in range(len(grid)):
-            for col in range(len(grid[row])):
-                cell = grid[row][col]
-                if cell is not 'G':
-                    f.write(f"{cell} {col} {row}\n")
-write_grid_to_file(grid, './data/01-comedy-solution.txt')
+        for row in range(height):
+                for col in range(width):
+                    cell = grid[row][col]
+                    if cell not in[None, 'G', 'S']:
+                        f.write(f"{cell} {col} {row}\n")
 
-silver_point_cost_sum = sum(point.cost for point in silver_points)
-print("Sum of Silver Point Costs:", silver_point_cost_sum)
+write_grid_to_file(grid, './data/01-comedy-solution.txt')
